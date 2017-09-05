@@ -1,0 +1,15 @@
+{
+  "name": "trig-visualizer",
+  "version": "1.0.0",
+  "description": "Trigonometry visualized with SVG in Elm",
+  "main": "index.js",
+  "repository": "git@github.com:hendriklammers/trig-visualizer.git",
+  "scripts": {
+    "start": "elm-live src/Main.elm --output=public/elm.js --dir=public --pushstate --open"
+  },
+  "author": "Hendrik Lammers <lammers@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "elm-live": "^2.7.5"
+  }
+}
