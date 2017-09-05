@@ -1,18 +1,25 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, program)
+import Window exposing (Size)
+import Task
 
 
 -- Model
 
 
 type alias Model =
-    String
+    { windowSize : Size }
 
 
 initialModel : Model
 initialModel =
-    "Trig Visualizer"
+    { windowSize = Size 0 0 }
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( initialModel, Task.perform WindowResize Window.size )
 
 
 
@@ -20,14 +27,14 @@ initialModel =
 
 
 type Msg
-    = NoOp
+    = WindowResize Size
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
+        WindowResize size ->
+            ( { model | windowSize = size }, Cmd.none )
 
 
 
@@ -36,7 +43,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Window.resizes WindowResize
 
 
 
@@ -45,7 +52,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    text model
+    text <| toString model.windowSize
 
 
 
@@ -55,7 +62,7 @@ view model =
 main : Program Never Model Msg
 main =
     program
-        { init = ( initialModel, Cmd.none )
+        { init = init
         , subscriptions = subscriptions
         , update = update
         , view = view
