@@ -1,8 +1,10 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, program)
-import Window exposing (Size)
+import Svg exposing (Svg, svg, rect)
+import Svg.Attributes exposing (width, height, viewBox, fill)
 import Task
+import Window exposing (Size)
 
 
 -- Model
@@ -52,7 +54,24 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    text <| toString model.windowSize
+    viewSvg model
+
+
+viewSvg : Model -> Html Msg
+viewSvg model =
+    let
+        w =
+            toString model.windowSize.width
+
+        h =
+            toString model.windowSize.height
+    in
+        svg
+            [ width w, height h, viewBox ("0 0 " ++ w ++ " " ++ h) ]
+            [ rect
+                [ width w, height h, fill "#eee" ]
+                []
+            ]
 
 
 
