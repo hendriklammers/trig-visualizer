@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, program)
-import Svg exposing (Svg, svg, rect)
-import Svg.Attributes exposing (width, height, viewBox, fill)
+import Svg exposing (Svg, svg, rect, polygon)
+import Svg.Attributes as S
 import Task
 import Window exposing (Size)
 
@@ -11,12 +11,26 @@ import Window exposing (Size)
 
 
 type alias Model =
-    { windowSize : Size }
+    { windowSize : Size
+    , points : List Point
+    }
+
+
+type alias Point =
+    { x : Int
+    , y : Int
+    }
 
 
 initialModel : Model
 initialModel =
-    { windowSize = Size 0 0 }
+    { windowSize = Size 0 0
+    , points =
+        [ Point 200 200
+        , Point 600 400
+        , Point 200 400
+        ]
+    }
 
 
 init : ( Model, Cmd Msg )
@@ -67,11 +81,28 @@ viewSvg model =
             toString model.windowSize.height
     in
         svg
-            [ width w, height h, viewBox ("0 0 " ++ w ++ " " ++ h) ]
+            [ S.width w, S.height h, S.viewBox ("0 0 " ++ w ++ " " ++ h) ]
             [ rect
-                [ width w, height h, fill "#eee" ]
+                [ S.width w, S.height h, S.fill "#eee" ]
                 []
+            , svgTriangle model.points
             ]
+
+
+svgTriangle : List Point -> Svg Msg
+svgTriangle points =
+    polygon
+        [ S.points <| pointString points
+        , S.fill "#000"
+        ]
+        []
+
+
+pointString : List Point -> String
+pointString points =
+    points
+        |> List.map (\p -> toString p.x ++ "," ++ toString p.y)
+        |> String.join " "
 
 
 
