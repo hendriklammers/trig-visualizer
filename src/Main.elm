@@ -33,9 +33,9 @@ initialModel : Model
 initialModel =
     { windowSize = Size 0 0
     , triangle =
-        { a = Vector 0 0
-        , b = Vector 400 0
-        , c = Vector 0 300
+        { a = Vector 400 0
+        , b = Vector 0 300
+        , c = Vector 0 0
         }
     }
 
@@ -99,7 +99,7 @@ viewSvg model =
 viewTriangle : Triangle -> Svg Msg
 viewTriangle triangle =
     polygon
-        [ S.points "0,0 400,0 0,300"
+        [ S.points <| pointString triangle
         , S.transform "translate(100 100)"
         , S.fill "#fff"
         , S.stroke "#000"
@@ -125,10 +125,28 @@ viewHandles points =
             (List.map viewHandle points)
 
 
-pointString : List Vector -> String
-pointString =
-    List.map (\p -> toString p.x ++ "," ++ toString p.y)
-        >> String.join " "
+-- let
+--     viewHandle p =
+--         rect
+--             [ S.x <| toString (p.x - 5)
+--             , S.y <| toString (p.y - 5)
+--             , S.width "10"
+--             , S.height "10"
+--             , S.fill "#e81778"
+--             ]
+--             []
+-- in
+--     g []
+--         (List.map viewHandle points)
+
+
+pointString : Triangle -> String
+pointString { a, b, c } =
+    let
+        str { x, y } =
+            toString x ++ "," ++ toString y
+    in
+        str a ++ " " ++ str b ++ " " ++ str c
 
 
 
