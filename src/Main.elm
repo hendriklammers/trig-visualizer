@@ -92,7 +92,11 @@ viewSvg model =
             [ rect
                 [ S.width w, S.height h, S.fill "#eee" ]
                 []
-            , viewTriangle model.triangle
+            , g [ S.transform "translate(100 100)" ]
+                [ viewTriangle model.triangle
+                , viewHandle model.triangle.a
+                , viewHandle model.triangle.b
+                ]
             ]
 
 
@@ -100,7 +104,6 @@ viewTriangle : Triangle -> Svg Msg
 viewTriangle triangle =
     polygon
         [ S.points <| pointString triangle
-        , S.transform "translate(100 100)"
         , S.fill "#fff"
         , S.stroke "#000"
         , S.strokeWidth "2"
@@ -108,36 +111,16 @@ viewTriangle triangle =
         []
 
 
-viewHandles : List Vector -> Svg Msg
-viewHandles points =
-    let
-        viewHandle p =
-            rect
-                [ S.x <| toString (p.x - 5)
-                , S.y <| toString (p.y - 5)
-                , S.width "10"
-                , S.height "10"
-                , S.fill "#e81778"
-                ]
-                []
-    in
-        g []
-            (List.map viewHandle points)
-
-
--- let
---     viewHandle p =
---         rect
---             [ S.x <| toString (p.x - 5)
---             , S.y <| toString (p.y - 5)
---             , S.width "10"
---             , S.height "10"
---             , S.fill "#e81778"
---             ]
---             []
--- in
---     g []
---         (List.map viewHandle points)
+viewHandle : Vector -> Svg Msg
+viewHandle { x, y } =
+    rect
+        [ S.x <| toString (x - 5)
+        , S.y <| toString (y - 5)
+        , S.width "10"
+        , S.height "10"
+        , S.fill "#e81778"
+        ]
+        []
 
 
 pointString : Triangle -> String
