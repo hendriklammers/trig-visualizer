@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, program)
-import Svg exposing (Svg, svg, rect, polygon)
+import Svg exposing (Svg, g, svg, rect, polygon)
 import Svg.Attributes as S
 import Task
 import Window exposing (Size)
@@ -12,11 +12,18 @@ import Window exposing (Size)
 
 type alias Model =
     { windowSize : Size
-    , points : List Point
+    , triangle : Triangle
     }
 
 
-type alias Point =
+type alias Triangle =
+    { a : Vector
+    , b : Vector
+    , c : Vector
+    }
+
+
+type alias Vector =
     { x : Int
     , y : Int
     }
@@ -25,11 +32,11 @@ type alias Point =
 initialModel : Model
 initialModel =
     { windowSize = Size 0 0
-    , points =
-        [ Point 200 200
-        , Point 600 400
-        , Point 200 400
-        ]
+    , triangle =
+        { a = Vector 0 0
+        , b = Vector 400 0
+        , c = Vector 0 300
+        }
     }
 
 
@@ -85,24 +92,43 @@ viewSvg model =
             [ rect
                 [ S.width w, S.height h, S.fill "#eee" ]
                 []
-            , svgTriangle model.points
+            , viewTriangle model.triangle
             ]
 
 
-svgTriangle : List Point -> Svg Msg
-svgTriangle points =
+viewTriangle : Triangle -> Svg Msg
+viewTriangle triangle =
     polygon
-        [ S.points <| pointString points
-        , S.fill "#000"
+        [ S.points "0,0 400,0 0,300"
+        , S.transform "translate(100 100)"
+        , S.fill "#fff"
+        , S.stroke "#000"
+        , S.strokeWidth "2"
         ]
         []
 
 
-pointString : List Point -> String
-pointString points =
-    points
-        |> List.map (\p -> toString p.x ++ "," ++ toString p.y)
-        |> String.join " "
+viewHandles : List Vector -> Svg Msg
+viewHandles points =
+    let
+        viewHandle p =
+            rect
+                [ S.x <| toString (p.x - 5)
+                , S.y <| toString (p.y - 5)
+                , S.width "10"
+                , S.height "10"
+                , S.fill "#e81778"
+                ]
+                []
+    in
+        g []
+            (List.map viewHandle points)
+
+
+pointString : List Vector -> String
+pointString =
+    List.map (\p -> toString p.x ++ "," ++ toString p.y)
+        >> String.join " "
 
 
 
