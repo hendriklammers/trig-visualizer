@@ -8,16 +8,9 @@ import Messages exposing (..)
 import Window
 
 
--- Subscriptions
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Window.resizes WindowResize
-
-
-
--- Main
 
 
 main : Program Never Model Msg
