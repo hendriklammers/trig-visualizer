@@ -6,8 +6,28 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 svg {
   display: block;
+}
+
+.textfields {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  padding: 10px;
+  background: #fff;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.textfield {
+
+}
+
+.textfield__label {
+  display: inline-block;
+  margin-right: 8px;
 }

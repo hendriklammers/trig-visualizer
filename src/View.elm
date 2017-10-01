@@ -1,8 +1,8 @@
 module View exposing (..)
 
-import Html exposing (Html, text, program, div)
+import Html exposing (Html, text, program, div, span)
 import Html.Attributes as H
-import Svg exposing (Svg, g, svg, rect, polygon, text_)
+import Svg exposing (Svg, g, svg, rect, polygon, defs, text_)
 import Svg.Attributes as S
 import Model exposing (Model, Triangle)
 import Vector exposing (Vector, distance)
@@ -15,7 +15,7 @@ view model =
     div
         [ H.class "container" ]
         [ viewSvg model
-        , viewTextfields model
+        , viewValues model
         ]
 
 
@@ -24,19 +24,26 @@ formatFloat n =
     (n * 100 |> round |> toFloat) / 100 |> toString
 
 
-viewLength : ( Vector, Vector ) -> Html Msg
-viewLength ( p1, p2 ) =
-    distance p1 p2
-        |> formatFloat
-        |> text
+viewLength : String -> ( Vector, Vector ) -> Html Msg
+viewLength label ( p1, p2 ) =
+    let
+        str =
+            distance p1 p2
+                |> formatFloat
+    in
+        div
+            [ H.class "textfield" ]
+            [ span [ H.class "textfield__label" ] [ text label ]
+            , text str
+            ]
 
 
-viewTextfields : Model -> Html Msg
-viewTextfields { triangle } =
+viewValues : Model -> Html Msg
+viewValues { triangle } =
     div [ H.class "textfields" ]
-        [ viewLength ( triangle.a, triangle.b )
-        , viewLength ( triangle.a, triangle.c )
-        , viewLength ( triangle.b, triangle.c )
+        [ viewLength "length AB" ( triangle.a, triangle.b )
+        , viewLength "length AC" ( triangle.a, triangle.c )
+        , viewLength "length BC" ( triangle.b, triangle.c )
         ]
 
 
@@ -56,7 +63,10 @@ viewSvg model =
     in
         svg
             [ S.width w, S.height h, S.viewBox ("0 0 " ++ w ++ " " ++ h) ]
-            [ rect
+            [ defs
+                []
+                []
+            , rect
                 [ S.width w, S.height h, S.fill "#eee" ]
                 []
             , g
@@ -65,7 +75,23 @@ viewSvg model =
                 , viewHandle model.triangle.a
                 , viewHandle model.triangle.b
                 ]
+            , g
+                [ S.transform <| translateVector config.offset ]
+                [ viewLabel "A" (Vector (model.triangle.a.x + 15) -10)
+                , viewLabel "B" (Vector -10 (model.triangle.b.y + 15))
+                , viewLabel "C" (Vector -10 -10)
+                ]
             ]
+
+
+viewLabel : String -> Vector -> Svg Msg
+viewLabel label { x, y } =
+    text_
+        [ S.textAnchor "middle"
+        , S.x <| toString x
+        , S.y <| toString y
+        ]
+        [ Svg.text label ]
 
 
 viewTriangle : Triangle -> Svg Msg
