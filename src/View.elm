@@ -101,8 +101,9 @@ viewSvg model =
             , g
                 [ S.transform <| translateVector config.offset ]
                 [ viewTriangle model.triangle
-                , viewCircle model.triangle.a
-                , viewCircle model.triangle.b
+                , viewCornerCircle model.triangle.a
+                , viewCornerCircle model.triangle.b
+                , viewCornerRect model.triangle.c
                 ]
             , g
                 [ S.transform <| translateVector config.offset ]
@@ -113,19 +114,43 @@ viewSvg model =
             ]
 
 
-viewCircle : Vector -> Svg Msg
-viewCircle { x, y } =
+cornerAttributes : List (Svg.Attribute Msg)
+cornerAttributes =
+    [ S.stroke "#c00"
+    , S.strokeWidth "2"
+    , S.fill "none"
+    , S.opacity "0.75"
+    , S.clipPath "url(#mask)"
+    ]
+
+
+viewCornerCircle : Vector -> Svg Msg
+viewCornerCircle { x, y } =
     circle
-        [ S.cx <| toString x
-        , S.cy <| toString y
-        , S.r "25"
-        , S.stroke "#c00"
-        , S.strokeWidth "2"
-        , S.fill "none"
-        , S.opacity "0.75"
-        , S.clipPath "url(#mask)"
-        ]
+        (cornerAttributes
+            ++ [ S.cx <| toString x
+               , S.cy <| toString y
+               , S.r "25"
+               ]
+        )
         []
+
+
+viewCornerRect : Vector -> Html Msg
+viewCornerRect { x, y } =
+    let
+        size =
+            40
+    in
+        rect
+            (cornerAttributes
+                ++ [ S.x <| toString <| x - floor (size / 2)
+                   , S.y <| toString <| y - floor (size / 2)
+                   , S.width <| toString size
+                   , S.height <| toString size
+                   ]
+            )
+            []
 
 
 viewLabel : String -> Vector -> Svg Msg
