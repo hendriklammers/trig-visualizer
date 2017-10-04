@@ -89,11 +89,11 @@ viewLengths model =
             [ S.transform <| translateVector config.offset ]
             [ viewLength posAC 0 model.lengthAC
             , viewLength posBC -90 model.lengthBC
-            , viewLength posAB -45 model.lengthAB
+            , viewLength posAB -model.angleA model.lengthAB
             ]
 
 
-viewLength : Vector -> Int -> Float -> Svg Msg
+viewLength : Vector -> Float -> Float -> Svg Msg
 viewLength { x, y } rotation length =
     let
         r =
