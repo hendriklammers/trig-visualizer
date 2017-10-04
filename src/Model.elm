@@ -3,7 +3,6 @@ module Model exposing (..)
 import Types exposing (Vector, Triangle)
 import Window exposing (Size)
 import Messages exposing (..)
-import Debug
 
 
 type alias Model =
@@ -12,6 +11,8 @@ type alias Model =
     , lengthAB : Float
     , lengthAC : Float
     , lengthBC : Float
+    , angleA : Float
+    , angleB : Float
     }
 
 
@@ -26,6 +27,8 @@ initial =
     , lengthAB = 0
     , lengthAC = 0
     , lengthBC = 0
+    , angleA = 0
+    , angleB = 0
     }
 
 
@@ -33,23 +36,50 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         WindowResize size ->
-            { model | windowSize = size } ! []
+            ( { model | windowSize = size }, Cmd.none )
 
         UpdateTriangle triangle ->
-            calcLengths triangle model ! []
+            ( { model | triangle = triangle }
+                |> calcLengths
+                |> calcAngles
+            , Cmd.none
+            )
 
 
-calcLengths : Triangle -> Model -> Model
-calcLengths triangle model =
+calcAngles : Model -> Model
+calcAngles model =
     let
-        log =
-            Debug.log "triangle" triangle
+        t =
+            model.triangle
+
+        a =
+            (model.lengthBC / model.lengthAC)
+                |> atan
+                |> radiansToDegrees
+
+        b =
+            (model.lengthAC / model.lengthBC)
+                |> atan
+                |> radiansToDegrees
+    in
+        { model | angleA = a, angleB = b }
+
+
+radiansToDegrees : Float -> Float
+radiansToDegrees radians =
+    radians * 180 / pi
+
+
+calcLengths : Model -> Model
+calcLengths model =
+    let
+        t =
+            model.triangle
     in
         { model
-            | lengthAB = distance triangle.a triangle.b
-            , lengthAC = distance triangle.a triangle.c
-            , lengthBC = distance triangle.b triangle.c
-            , triangle = triangle
+            | lengthAB = distance t.a t.b
+            , lengthAC = distance t.a t.c
+            , lengthBC = distance t.b t.c
         }
 
 
