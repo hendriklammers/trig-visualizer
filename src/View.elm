@@ -64,7 +64,29 @@ viewSvg model =
             , viewTriangle model.triangle
             , viewLabels model
             , viewLengths model
+            , viewAngles model
             ]
+
+
+viewAngles : Model -> Svg Msg
+viewAngles model =
+    g
+        [ S.transform <| translateVector config.offset ]
+        [ text_
+            [ S.textAnchor "start"
+            , S.x <| toString <| model.triangle.a.x + 25
+            , S.y <| toString <| model.triangle.a.y - 25
+            , S.fontSize "16"
+            ]
+            [ Svg.text <| formatFloat model.angleA ++ "°" ]
+        , text_
+            [ S.textAnchor "start"
+            , S.x <| toString <| model.triangle.b.x
+            , S.y <| toString <| model.triangle.b.y + 30
+            , S.fontSize "16"
+            ]
+            [ Svg.text <| formatFloat model.angleB ++ "°" ]
+        ]
 
 
 viewLengths : Model -> Svg Msg
@@ -114,6 +136,27 @@ viewLength { x, y } rotation length =
             [ Svg.text <| formatFloat length ]
 
 
+viewLabels : Model -> Svg Msg
+viewLabels model =
+    g
+        [ S.transform <| translateVector config.offset ]
+        [ viewLabel "A" (Vector (model.triangle.a.x + 15) -10)
+        , viewLabel "B" (Vector -10 (model.triangle.b.y + 20))
+        , viewLabel "C" (Vector -10 -10)
+        ]
+
+
+viewLabel : String -> Vector -> Svg Msg
+viewLabel label { x, y } =
+    text_
+        [ S.textAnchor "middle"
+        , S.x <| toString x
+        , S.y <| toString y
+        , S.fontSize "18"
+        ]
+        [ Svg.text label ]
+
+
 viewTriangle : Triangle -> Html Msg
 viewTriangle triangle =
     let
@@ -135,30 +178,10 @@ viewTriangle triangle =
             ]
 
 
-viewLabels : Model -> Svg Msg
-viewLabels model =
-    g
-        [ S.transform <| translateVector config.offset ]
-        [ viewLabel "A" (Vector (model.triangle.a.x + 15) -10)
-        , viewLabel "B" (Vector -10 (model.triangle.b.y + 20))
-        , viewLabel "C" (Vector -10 -10)
-        ]
-
-
-viewLabel : String -> Vector -> Svg Msg
-viewLabel label { x, y } =
-    text_
-        [ S.textAnchor "middle"
-        , S.x <| toString x
-        , S.y <| toString y
-        ]
-        [ Svg.text label ]
-
-
 cornerAttributes : List (Svg.Attribute Msg)
 cornerAttributes =
     [ S.stroke "#c00"
-    , S.strokeWidth "2"
+    , S.strokeWidth "1"
     , S.fill "none"
     , S.opacity "0.75"
     , S.clipPath "url(#mask)"
