@@ -25,8 +25,16 @@ view : Model -> Html Msg
 view model =
     div
         [ H.class "container" ]
-        [ viewSvg model
-        , viewValues model
+        [ viewModel model
+        , viewSvg model
+        ]
+
+
+viewModel : Model -> Html Msg
+viewModel model =
+    div
+        []
+        [ text <| toString model
         ]
 
 
@@ -98,20 +106,40 @@ viewSvg model =
             , rect
                 [ S.width w, S.height h, S.fill "#eee" ]
                 []
-            , g
-                [ S.transform <| translateVector config.offset ]
-                [ viewTriangle model.triangle
-                , viewCornerCircle model.triangle.a
-                , viewCornerCircle model.triangle.b
-                , viewCornerRect model.triangle.c
-                ]
-            , g
-                [ S.transform <| translateVector config.offset ]
-                [ viewLabel "A" (Vector (model.triangle.a.x + 15) -10)
-                , viewLabel "B" (Vector -10 (model.triangle.b.y + 20))
-                , viewLabel "C" (Vector -10 -10)
-                ]
+            , viewTriangle model.triangle
+            , viewLabels model.triangle
             ]
+
+
+viewTriangle : Triangle -> Html Msg
+viewTriangle triangle =
+    let
+        poly =
+            polygon
+                [ S.points <| pointString triangle
+                , S.fill "#fff"
+                , S.stroke "#000"
+                , S.strokeWidth "2"
+                ]
+                []
+    in
+        g
+            [ S.transform <| translateVector config.offset ]
+            [ poly
+            , viewCornerCircle triangle.a
+            , viewCornerCircle triangle.b
+            , viewCornerRect triangle.c
+            ]
+
+
+viewLabels : Triangle -> Svg Msg
+viewLabels triangle =
+    g
+        [ S.transform <| translateVector config.offset ]
+        [ viewLabel "A" (Vector (triangle.a.x + 15) -10)
+        , viewLabel "B" (Vector -10 (triangle.b.y + 20))
+        , viewLabel "C" (Vector -10 -10)
+        ]
 
 
 cornerAttributes : List (Svg.Attribute Msg)
@@ -161,17 +189,6 @@ viewLabel label { x, y } =
         , S.y <| toString y
         ]
         [ Svg.text label ]
-
-
-viewTriangle : Triangle -> Svg Msg
-viewTriangle triangle =
-    polygon
-        [ S.points <| pointString triangle
-        , S.fill "#fff"
-        , S.stroke "#000"
-        , S.strokeWidth "2"
-        ]
-        []
 
 
 viewHandle : Vector -> Svg Msg
