@@ -1,6 +1,6 @@
 module Config exposing (config)
 
-import Vector exposing (Vector)
+import Types exposing (Vector)
 
 
 type alias Config =

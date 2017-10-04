@@ -1,6 +1,6 @@
 module Model exposing (..)
 
-import Vector exposing (Vector)
+import Types exposing (Vector, Triangle)
 import Window exposing (Size)
 import Messages exposing (..)
 
@@ -8,13 +8,9 @@ import Messages exposing (..)
 type alias Model =
     { windowSize : Size
     , triangle : Triangle
-    }
-
-
-type alias Triangle =
-    { a : Vector
-    , b : Vector
-    , c : Vector
+    , lengthAB : Float
+    , lengthAC : Float
+    , lengthBC : Float
     }
 
 
@@ -26,6 +22,9 @@ initial =
         , b = Vector 0 400
         , c = Vector 0 0
         }
+    , lengthAB = 0
+    , lengthAC = 0
+    , lengthBC = 0
     }
 
 
@@ -34,3 +33,6 @@ update msg model =
     case msg of
         WindowResize size ->
             ( { model | windowSize = size }, Cmd.none )
+
+        UpdateTriangle triangle ->
+            model ! []

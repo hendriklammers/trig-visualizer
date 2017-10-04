@@ -2,10 +2,21 @@ module View exposing (..)
 
 import Html exposing (Html, text, program, div, span)
 import Html.Attributes as H
-import Svg exposing (Svg, g, svg, rect, polygon, defs, text_)
+import Svg
+    exposing
+        ( Svg
+        , g
+        , svg
+        , rect
+        , polygon
+        , defs
+        , text_
+        , clipPath
+        , circle
+        )
 import Svg.Attributes as S
-import Model exposing (Model, Triangle)
-import Vector exposing (Vector, distance)
+import Model exposing (Model)
+import Types exposing (Vector, Triangle)
 import Config exposing (config)
 import Messages exposing (..)
 
@@ -22,6 +33,18 @@ view model =
 formatFloat : Float -> String
 formatFloat n =
     (n * 100 |> round |> toFloat) / 100 |> toString
+
+
+distance : Vector -> Vector -> Float
+distance v1 v2 =
+    let
+        x =
+            toFloat <| v1.x - v2.x
+
+        y =
+            toFloat <| v1.y - v2.y
+    in
+        sqrt (x * x + y * y)
 
 
 viewLength : String -> ( Vector, Vector ) -> Html Msg
@@ -65,23 +88,44 @@ viewSvg model =
             [ S.width w, S.height h, S.viewBox ("0 0 " ++ w ++ " " ++ h) ]
             [ defs
                 []
-                []
+                [ clipPath
+                    [ S.id "mask" ]
+                    [ polygon
+                        [ S.points <| pointString model.triangle ]
+                        []
+                    ]
+                ]
             , rect
                 [ S.width w, S.height h, S.fill "#eee" ]
                 []
             , g
                 [ S.transform <| translateVector config.offset ]
                 [ viewTriangle model.triangle
-                , viewHandle model.triangle.a
-                , viewHandle model.triangle.b
+                , viewCircle model.triangle.a
+                , viewCircle model.triangle.b
                 ]
             , g
                 [ S.transform <| translateVector config.offset ]
                 [ viewLabel "A" (Vector (model.triangle.a.x + 15) -10)
-                , viewLabel "B" (Vector -10 (model.triangle.b.y + 15))
+                , viewLabel "B" (Vector -10 (model.triangle.b.y + 20))
                 , viewLabel "C" (Vector -10 -10)
                 ]
             ]
+
+
+viewCircle : Vector -> Svg Msg
+viewCircle { x, y } =
+    circle
+        [ S.cx <| toString x
+        , S.cy <| toString y
+        , S.r "25"
+        , S.stroke "#c00"
+        , S.strokeWidth "2"
+        , S.fill "none"
+        , S.opacity "0.75"
+        , S.clipPath "url(#mask)"
+        ]
+        []
 
 
 viewLabel : String -> Vector -> Svg Msg
