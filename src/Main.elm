@@ -15,9 +15,20 @@ subscriptions model =
 
 main : Program Never Model Msg
 main =
-    program
-        { init = ( Model.initial, Task.perform WindowResize Window.size )
-        , subscriptions = subscriptions
-        , update = Model.update
-        , view = View.view
-        }
+    let
+        initial =
+            Model.initial
+    in
+        program
+            { init =
+                ( initial
+                , Cmd.batch
+                    [ Task.perform WindowResize Window.size
+                    , Task.perform UpdateTriangle
+                        (Task.succeed initial.triangle)
+                    ]
+                )
+            , subscriptions = subscriptions
+            , update = Model.update
+            , view = View.view
+            }
