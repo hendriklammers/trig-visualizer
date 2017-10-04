@@ -18,15 +18,16 @@ main =
     let
         initial =
             Model.initial
+
+        commands =
+            [ Task.perform WindowResize Window.size
+            , Task.perform UpdateTriangle (Task.succeed initial.triangle)
+            ]
     in
         program
             { init =
                 ( initial
-                , Cmd.batch
-                    [ Task.perform WindowResize Window.size
-                    , Task.perform UpdateTriangle
-                        (Task.succeed initial.triangle)
-                    ]
+                , Cmd.batch commands
                 )
             , subscriptions = subscriptions
             , update = Model.update
