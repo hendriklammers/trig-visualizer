@@ -94,24 +94,24 @@ viewLengths model =
     let
         posAC =
             { x = -10
-            , y = round <| model.lengthBC / 2
+            , y = round <| model.lengthAC / 2
             }
 
         posBC =
-            { x = round <| model.lengthAC / 2
+            { x = round <| model.lengthBC / 2
             , y = round model.lengthAC + 20
             }
 
         posAB =
-            { x = round <| model.lengthAC / 2 + 5
-            , y = round <| model.lengthBC / 2 - 5
+            { x = round <| model.lengthBC / 2 + 5
+            , y = round <| model.lengthAC / 2 - 5
             }
     in
         g
             [ S.transform <| translateVector config.offset ]
             [ viewLength posAC -90 model.lengthAC
             , viewLength posBC 0 model.lengthBC
-            , viewLength posAB model.angleA model.lengthAB
+            , viewLength posAB model.angleB model.lengthAB
             ]
 
 
