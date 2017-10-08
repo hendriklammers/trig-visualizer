@@ -20,9 +20,9 @@ initial : Model
 initial =
     { windowSize = Size 0 0
     , triangle =
-        { a = Vector 400 0
-        , b = Vector 0 400
-        , c = Vector 0 0
+        { a = Vector 0 0
+        , b = Vector 400 400
+        , c = Vector 0 400
         }
     , lengthAB = 0
     , lengthAC = 0

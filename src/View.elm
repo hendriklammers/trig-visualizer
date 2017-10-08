@@ -74,15 +74,15 @@ viewAngles model =
         [ S.transform <| translateVector config.offset ]
         [ text_
             [ S.textAnchor "start"
-            , S.x <| toString <| model.triangle.a.x + 25
+            , S.x <| toString <| model.triangle.a.x
             , S.y <| toString <| model.triangle.a.y - 25
             , S.fontSize "16"
             ]
             [ Svg.text <| formatFloat model.angleA ++ "°" ]
         , text_
             [ S.textAnchor "start"
-            , S.x <| toString <| model.triangle.b.x
-            , S.y <| toString <| model.triangle.b.y + 30
+            , S.x <| toString <| model.triangle.b.x + 25
+            , S.y <| toString <| model.triangle.b.y
             , S.fontSize "16"
             ]
             [ Svg.text <| formatFloat model.angleB ++ "°" ]
@@ -93,25 +93,25 @@ viewLengths : Model -> Svg Msg
 viewLengths model =
     let
         posAC =
-            { x = round <| model.lengthAC / 2
-            , y = -10
-            }
-
-        posBC =
             { x = -10
             , y = round <| model.lengthBC / 2
             }
 
+        posBC =
+            { x = round <| model.lengthAC / 2
+            , y = round model.lengthAC + 20
+            }
+
         posAB =
-            { x = round <| model.lengthAC / 2 + 15
-            , y = round <| model.lengthBC / 2 + 15
+            { x = round <| model.lengthAC / 2 + 5
+            , y = round <| model.lengthBC / 2 - 5
             }
     in
         g
             [ S.transform <| translateVector config.offset ]
-            [ viewLength posAC 0 model.lengthAC
-            , viewLength posBC -90 model.lengthBC
-            , viewLength posAB -model.angleA model.lengthAB
+            [ viewLength posAC -90 model.lengthAC
+            , viewLength posBC 0 model.lengthBC
+            , viewLength posAB model.angleA model.lengthAB
             ]
 
 
@@ -140,9 +140,13 @@ viewLabels : Model -> Svg Msg
 viewLabels model =
     g
         [ S.transform <| translateVector config.offset ]
-        [ viewLabel "A" (Vector (model.triangle.a.x + 15) -10)
-        , viewLabel "B" (Vector -10 (model.triangle.b.y + 20))
-        , viewLabel "C" (Vector -10 -10)
+        [ viewLabel "A" (Vector -10 -10)
+        , viewLabel "B"
+            (Vector
+                (model.triangle.b.x + 15)
+                (model.triangle.b.y + 20)
+            )
+        , viewLabel "C" (Vector -10 (model.triangle.c.y + 20))
         ]
 
 
