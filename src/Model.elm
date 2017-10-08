@@ -21,7 +21,7 @@ initial =
     { windowSize = Size 0 0
     , triangle =
         { a = Vector 0 0
-        , b = Vector 400 400
+        , b = Vector 300 400
         , c = Vector 0 400
         }
     , lengthAB = 0
