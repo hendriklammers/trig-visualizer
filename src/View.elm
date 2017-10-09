@@ -27,7 +27,7 @@ view model =
     div
         [ H.class "container" ]
         [ viewModel model
-        , viewToggles model
+        , viewOptions model
         , viewSvg model
         ]
 
@@ -246,17 +246,20 @@ viewHandle { x, y } =
         []
 
 
-viewToggles : Model -> Html Msg
-viewToggles model =
-    label
+viewOptions : Model -> Html Msg
+viewOptions model =
+    div
         []
-        [ input
-            [ H.type_ "checkbox"
-            , H.style [ ( "margin-right", "5px" ) ]
-            , onClick ToggleNormalize
-            ]
+        [ label
             []
-        , text "Normalize sides"
+            [ input
+                [ H.type_ "checkbox"
+                , H.style [ ( "margin-right", "5px" ) ]
+                , onClick ToggleNormalize
+                ]
+                []
+            , text "Normalize sides"
+            ]
         ]
 
 
