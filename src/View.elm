@@ -18,7 +18,6 @@ import Svg
 import Svg.Attributes as S
 import Model exposing (Model)
 import Types exposing (Vector, Triangle, Length)
-import Config exposing (config)
 import Messages exposing (..)
 
 
@@ -63,35 +62,36 @@ viewSvg model =
             , rect
                 [ S.width w, S.height h, S.fill "#eee" ]
                 []
-            , viewTriangle model.triangle
-            , viewLabels model
-            , viewLengths model
-            , viewAngles model
+            , g
+                [ S.transform "translate(100 100)" ]
+                ([ viewTriangle model.triangle ]
+                    ++ viewLabels model
+                    ++ viewAngles model
+                    ++ viewLengths model
+                )
             ]
 
 
-viewAngles : Model -> Svg Msg
+viewAngles : Model -> List (Svg Msg)
 viewAngles model =
-    g
-        [ S.transform <| translateVector config.offset ]
-        [ text_
-            [ S.textAnchor "start"
-            , S.x <| toString <| model.triangle.a.x
-            , S.y <| toString <| model.triangle.a.y - 25
-            , S.fontSize "16"
-            ]
-            [ Svg.text <| formatFloat model.angleA ++ "°" ]
-        , text_
-            [ S.textAnchor "start"
-            , S.x <| toString <| model.triangle.b.x + 25
-            , S.y <| toString <| model.triangle.b.y
-            , S.fontSize "16"
-            ]
-            [ Svg.text <| formatFloat model.angleB ++ "°" ]
+    [ text_
+        [ S.textAnchor "start"
+        , S.x <| toString <| model.triangle.a.x
+        , S.y <| toString <| model.triangle.a.y - 25
+        , S.fontSize "16"
         ]
+        [ Svg.text <| formatFloat model.angleA ++ "°" ]
+    , text_
+        [ S.textAnchor "start"
+        , S.x <| toString <| model.triangle.b.x + 25
+        , S.y <| toString <| model.triangle.b.y
+        , S.fontSize "16"
+        ]
+        [ Svg.text <| formatFloat model.angleB ++ "°" ]
+    ]
 
 
-viewLengths : Model -> Svg Msg
+viewLengths : Model -> List (Svg Msg)
 viewLengths model =
     let
         ls =
@@ -123,9 +123,7 @@ viewLengths model =
             else
                 ls
     in
-        g
-            [ S.transform <| translateVector config.offset ]
-            (List.map viewLength normalized)
+        List.map viewLength normalized
 
 
 viewLength : Length -> Svg Msg
@@ -149,18 +147,16 @@ viewLength { position, rotation, value } =
             [ Svg.text <| formatFloat value ]
 
 
-viewLabels : Model -> Svg Msg
+viewLabels : Model -> List (Svg Msg)
 viewLabels model =
-    g
-        [ S.transform <| translateVector config.offset ]
-        [ viewLabel "A" (Vector -10 -10)
-        , viewLabel "B"
-            (Vector
-                (model.triangle.b.x + 15)
-                (model.triangle.b.y + 20)
-            )
-        , viewLabel "C" (Vector -10 (model.triangle.c.y + 20))
-        ]
+    [ viewLabel "A" (Vector -10 -10)
+    , viewLabel "B"
+        (Vector
+            (model.triangle.b.x + 15)
+            (model.triangle.b.y + 20)
+        )
+    , viewLabel "C" (Vector -10 (model.triangle.c.y + 20))
+    ]
 
 
 viewLabel : String -> Vector -> Svg Msg
@@ -182,12 +178,12 @@ viewTriangle triangle =
                 [ S.points <| pointString triangle
                 , S.fill "#fff"
                 , S.stroke "#000"
-                , S.strokeWidth "2"
+                , S.strokeWidth "1"
                 ]
                 []
     in
         g
-            [ S.transform <| translateVector config.offset ]
+            []
             [ poly
             , viewCornerCircle triangle.a
             , viewCornerCircle triangle.b
@@ -275,8 +271,3 @@ pointString { a, b, c } =
 formatFloat : Float -> String
 formatFloat n =
     (n * 100 |> round |> toFloat) / 100 |> toString
-
-
-translateVector : Vector -> String
-translateVector v =
-    "translate(" ++ toString v.x ++ " " ++ toString v.y ++ ")"
