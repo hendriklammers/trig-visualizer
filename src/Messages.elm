@@ -7,3 +7,4 @@ import Types exposing (Triangle)
 type Msg
     = WindowResize Size
     | UpdateTriangle Triangle
+    | ToggleNormalize

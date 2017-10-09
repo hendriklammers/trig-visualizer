@@ -13,6 +13,7 @@ type alias Model =
     , lengthBC : Float
     , angleA : Float
     , angleB : Float
+    , normalize : Bool
     }
 
 
@@ -29,6 +30,7 @@ initial =
     , lengthBC = 0
     , angleA = 0
     , angleB = 0
+    , normalize = False
     }
 
 
@@ -44,6 +46,9 @@ update msg model =
                 |> calcAngles
             , Cmd.none
             )
+
+        ToggleNormalize ->
+            ( { model | normalize = not model.normalize }, Cmd.none )
 
 
 calcAngles : Model -> Model

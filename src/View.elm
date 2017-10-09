@@ -1,7 +1,8 @@
 module View exposing (..)
 
-import Html exposing (Html, text, program, div, span)
+import Html exposing (Html, text, program, div, span, input, label)
 import Html.Attributes as H
+import Html.Events exposing (onClick)
 import Svg
     exposing
         ( Svg
@@ -26,6 +27,7 @@ view model =
     div
         [ H.class "container" ]
         [ viewModel model
+        , viewToggles model
         , viewSvg model
         ]
 
@@ -106,17 +108,26 @@ viewLengths model =
             { x = round <| model.lengthBC / 2 + 5
             , y = round <| model.lengthAC / 2 - 5
             }
+
+        ls =
+            [ ( posAC, -90, model.lengthAC )
+            , ( posBC, 0, model.lengthBC )
+            , ( posAB, model.angleB, model.lengthAB )
+            ]
+
+        normalized =
+            if model.normalize then
+                List.map (\( p, r, l ) -> ( p, r, l / model.lengthAB )) ls
+            else
+                ls
     in
         g
             [ S.transform <| translateVector config.offset ]
-            [ viewLength posAC -90 model.lengthAC
-            , viewLength posBC 0 model.lengthBC
-            , viewLength posAB model.angleB model.lengthAB
-            ]
+            (List.map viewLength normalized)
 
 
-viewLength : Vector -> Float -> Float -> Svg Msg
-viewLength { x, y } rotation length =
+viewLength : ( Vector, Float, Float ) -> Svg Msg
+viewLength ( { x, y }, rotation, length ) =
     let
         r =
             "rotate("
@@ -231,6 +242,20 @@ viewHandle { x, y } =
         , S.fill "#e81778"
         ]
         []
+
+
+viewToggles : Model -> Html Msg
+viewToggles model =
+    label
+        []
+        [ input
+            [ H.type_ "checkbox"
+            , H.style [ ( "margin-right", "5px" ) ]
+            , onClick ToggleNormalize
+            ]
+            []
+        , text "Normalize sides"
+        ]
 
 
 pointString : Triangle -> String
