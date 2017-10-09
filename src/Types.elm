@@ -12,3 +12,10 @@ type alias Triangle =
     , b : Vector
     , c : Vector
     }
+
+
+type alias Length =
+    { position : Vector
+    , rotation : Float
+    , value : Float
+    }

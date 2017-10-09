@@ -17,7 +17,7 @@ import Svg
         )
 import Svg.Attributes as S
 import Model exposing (Model)
-import Types exposing (Vector, Triangle)
+import Types exposing (Vector, Triangle, Length)
 import Config exposing (config)
 import Messages exposing (..)
 
@@ -94,30 +94,32 @@ viewAngles model =
 viewLengths : Model -> Svg Msg
 viewLengths model =
     let
-        posAC =
-            { x = -10
-            , y = round <| model.lengthAC / 2
-            }
-
-        posBC =
-            { x = round <| model.lengthBC / 2
-            , y = round model.lengthAC + 20
-            }
-
-        posAB =
-            { x = round <| model.lengthBC / 2 + 5
-            , y = round <| model.lengthAC / 2 - 5
-            }
-
         ls =
-            [ ( posAC, -90, model.lengthAC )
-            , ( posBC, 0, model.lengthBC )
-            , ( posAB, model.angleB, model.lengthAB )
+            [ Length
+                { x = -10
+                , y = round <| model.lengthAC / 2
+                }
+                -90
+                model.lengthAC
+            , Length
+                { x = round <| model.lengthBC / 2
+                , y = round model.lengthAC + 20
+                }
+                0
+                model.lengthBC
+            , Length
+                { x = round <| model.lengthBC / 2 + 5
+                , y = round <| model.lengthAC / 2 - 5
+                }
+                model.angleB
+                model.lengthAB
             ]
 
         normalized =
             if model.normalize then
-                List.map (\( p, r, l ) -> ( p, r, l / model.lengthAB )) ls
+                List.map
+                    (\ln -> { ln | value = ln.value / model.lengthAB })
+                    ls
             else
                 ls
     in
@@ -126,25 +128,25 @@ viewLengths model =
             (List.map viewLength normalized)
 
 
-viewLength : ( Vector, Float, Float ) -> Svg Msg
-viewLength ( { x, y }, rotation, length ) =
+viewLength : Length -> Svg Msg
+viewLength { position, rotation, value } =
     let
         r =
             "rotate("
                 ++ toString rotation
                 ++ " "
-                ++ toString x
+                ++ toString position.x
                 ++ ","
-                ++ toString y
+                ++ toString position.y
                 ++ ")"
     in
         text_
             [ S.textAnchor "middle"
-            , S.x <| toString x
-            , S.y <| toString y
+            , S.x <| toString position.x
+            , S.y <| toString position.y
             , S.transform r
             ]
-            [ Svg.text <| formatFloat length ]
+            [ Svg.text <| formatFloat value ]
 
 
 viewLabels : Model -> Svg Msg
