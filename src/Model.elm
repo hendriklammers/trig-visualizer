@@ -1,28 +1,27 @@
 module Model exposing (..)
 
-import Types exposing (Vector, Triangle)
-import Window exposing (Size)
+import Types exposing (..)
 import Messages exposing (..)
+import Debug
 
 
 type alias Model =
-    { windowSize : Size
-    , triangle : Triangle
+    { triangle : Triangle
     , lengthAB : Float
     , lengthAC : Float
     , lengthBC : Float
     , angleA : Float
     , angleB : Float
     , normalize : Bool
+    , drag : Bool
     }
 
 
 initial : Model
 initial =
-    { windowSize = Size 0 0
-    , triangle =
+    { triangle =
         { a = Vector 0 0
-        , b = Vector 300 400
+        , b = Vector 400 400
         , c = Vector 0 400
         }
     , lengthAB = 0
@@ -31,17 +30,15 @@ initial =
     , angleA = 0
     , angleB = 0
     , normalize = False
+    , drag = False
     }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        WindowResize size ->
-            ( { model | windowSize = size }, Cmd.none )
-
         UpdateTriangle triangle ->
-            ( { model | triangle = triangle }
+            ( { model | triangle = updateC triangle }
                 |> calcLengths
                 |> calcAngles
             , Cmd.none
@@ -49,6 +46,24 @@ update msg model =
 
         ToggleNormalize ->
             ( { model | normalize = not model.normalize }, Cmd.none )
+
+        DragStart pos ->
+            ( { model | drag = True }, Cmd.none )
+
+        DragAt pos ->
+            let
+                log =
+                    Debug.log "pos" pos
+            in
+                model ! []
+
+        DragEnd pos ->
+            ( { model | drag = False }, Cmd.none )
+
+
+updateC : Triangle -> Triangle
+updateC triangle =
+    { triangle | c = Vector triangle.a.x triangle.b.y }
 
 
 calcAngles : Model -> Model

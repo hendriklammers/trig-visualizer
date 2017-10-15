@@ -5,12 +5,20 @@ import Task
 import View
 import Model exposing (Model)
 import Messages exposing (..)
-import Window
+import Mouse
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Window.resizes WindowResize
+    case model.drag of
+        False ->
+            Sub.none
+
+        True ->
+            Sub.batch
+                [ Mouse.moves DragAt
+                , Mouse.ups DragEnd
+                ]
 
 
 main : Program Never Model Msg
@@ -20,8 +28,7 @@ main =
             Model.initial
 
         commands =
-            [ Task.perform WindowResize Window.size
-            , Task.perform UpdateTriangle (Task.succeed initial.triangle)
+            [ Task.perform UpdateTriangle (Task.succeed initial.triangle)
             ]
     in
         program

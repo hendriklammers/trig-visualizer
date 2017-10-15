@@ -1,8 +1,8 @@
 module View exposing (..)
 
-import Html exposing (Html, text, program, div, span, input, label)
+import Html exposing (Html, Attribute, text, program, div, span, input, label)
 import Html.Attributes as H
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, on)
 import Svg
     exposing
         ( Svg
@@ -19,6 +19,8 @@ import Svg.Attributes as S
 import Model exposing (Model)
 import Types exposing (Vector, Triangle, Length)
 import Messages exposing (..)
+import Json.Decode as Decode
+import Mouse
 
 
 view : Model -> Html Msg
@@ -43,10 +45,10 @@ viewSvg : Model -> Html Msg
 viewSvg model =
     let
         w =
-            toString model.windowSize.width
+            "800"
 
         h =
-            toString model.windowSize.height
+            "600"
     in
         svg
             [ S.width w, S.height h, S.viewBox ("0 0 " ++ w ++ " " ++ h) ]
@@ -64,7 +66,7 @@ viewSvg model =
                 []
             , g
                 [ S.transform "translate(100 100)" ]
-                ([ viewTriangle model.triangle ]
+                ([ viewTriangle model.triangle, viewHandle model.triangle.b ]
                     ++ viewLabels model
                     ++ viewAngles model
                     ++ viewLengths model
@@ -238,6 +240,8 @@ viewHandle { x, y } =
         , S.width "10"
         , S.height "10"
         , S.fill "#e81778"
+        , S.class "handle"
+        , onMouseDown
         ]
         []
 
@@ -271,3 +275,8 @@ pointString { a, b, c } =
 formatFloat : Float -> String
 formatFloat n =
     (n * 100 |> round |> toFloat) / 100 |> toString
+
+
+onMouseDown : Attribute Msg
+onMouseDown =
+    on "mousedown" (Decode.map DragStart Mouse.position)

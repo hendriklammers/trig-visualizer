@@ -1,10 +1,12 @@
 module Messages exposing (..)
 
-import Window exposing (Size)
 import Types exposing (Triangle)
+import Mouse exposing (Position)
 
 
 type Msg
-    = WindowResize Size
-    | UpdateTriangle Triangle
+    = UpdateTriangle Triangle
     | ToggleNormalize
+    | DragStart Position
+    | DragAt Position
+    | DragEnd Position
