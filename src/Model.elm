@@ -2,7 +2,6 @@ module Model exposing (..)
 
 import Types exposing (..)
 import Messages exposing (..)
-import Debug
 
 
 type alias Model =
@@ -52,11 +51,10 @@ update msg model =
 
         DragAt pos ->
             let
-                log =
-                    Debug.log "pos" pos
-
                 b =
-                    { x = pos.x - 100, y = pos.y - 100 }
+                    { x = limitInt <| pos.x - 100
+                    , y = limitInt <| pos.y - 100
+                    }
 
                 triangle =
                     updateC <| { a = Vector 0 0, b = b, c = Vector 0 0 }
@@ -65,6 +63,14 @@ update msg model =
 
         DragEnd pos ->
             ( { model | drag = False }, Cmd.none )
+
+
+limitInt : Int -> Int
+limitInt n =
+    if n < 30 then
+        30
+    else
+        n
 
 
 updateTriangle : Model -> Triangle -> ( Model, Cmd Msg )
