@@ -305,11 +305,6 @@ offsetPosition =
         (Decode.field "offsetY" Decode.int)
 
 
-updateTriangle : Position -> Triangle -> Triangle
-updateTriangle { x, y } triangle =
-    triangle
-
-
 onMouseMove : Attribute Msg
 onMouseMove =
     on "mousemove" (Decode.map DragAt offsetPosition)

@@ -42,11 +42,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UpdateTriangle triangle ->
-            ( { model | triangle = updateC triangle }
-                |> calcLengths
-                |> calcAngles
-            , Cmd.none
-            )
+            updateTriangle model triangle
 
         ToggleNormalize ->
             ( { model | normalize = not model.normalize }, Cmd.none )
@@ -58,11 +54,26 @@ update msg model =
             let
                 log =
                     Debug.log "pos" pos
+
+                b =
+                    { x = pos.x - 100, y = pos.y - 100 }
+
+                triangle =
+                    updateC <| { a = Vector 0 0, b = b, c = Vector 0 0 }
             in
-                model ! []
+                updateTriangle model triangle
 
         DragEnd pos ->
             ( { model | drag = False }, Cmd.none )
+
+
+updateTriangle : Model -> Triangle -> ( Model, Cmd Msg )
+updateTriangle model triangle =
+    ( { model | triangle = updateC triangle }
+        |> calcLengths
+        |> calcAngles
+    , Cmd.none
+    )
 
 
 updateC : Triangle -> Triangle
