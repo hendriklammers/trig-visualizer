@@ -1,6 +1,16 @@
 module View exposing (..)
 
-import Html exposing (Html, Attribute, text, program, div, span, input, label)
+import Html
+    exposing
+        ( Html
+        , Attribute
+        , text
+        , program
+        , div
+        , span
+        , input
+        , label
+        )
 import Html.Attributes as H
 import Html.Events exposing (onClick, on)
 import Svg
@@ -20,7 +30,7 @@ import Model exposing (Model)
 import Types exposing (Vector, Triangle, Length)
 import Messages exposing (..)
 import Json.Decode as Decode
-import Mouse
+import Mouse exposing (Position)
 
 
 view : Model -> Html Msg
@@ -49,9 +59,20 @@ viewSvg model =
 
         h =
             "600"
+
+        mouseMove =
+            if model.drag then
+                [ onMouseMove ]
+            else
+                []
     in
         svg
-            [ S.width w, S.height h, S.viewBox ("0 0 " ++ w ++ " " ++ h) ]
+            ([ S.width w
+             , S.height h
+             , S.viewBox ("0 0 " ++ w ++ " " ++ h)
+             ]
+                ++ mouseMove
+            )
             [ defs
                 []
                 [ clipPath
@@ -275,6 +296,23 @@ pointString { a, b, c } =
 formatFloat : Float -> String
 formatFloat n =
     (n * 100 |> round |> toFloat) / 100 |> toString
+
+
+offsetPosition : Decode.Decoder Position
+offsetPosition =
+    Decode.map2 Position
+        (Decode.field "offsetX" Decode.int)
+        (Decode.field "offsetY" Decode.int)
+
+
+updateTriangle : Position -> Triangle -> Triangle
+updateTriangle { x, y } triangle =
+    triangle
+
+
+onMouseMove : Attribute Msg
+onMouseMove =
+    on "mousemove" (Decode.map DragAt offsetPosition)
 
 
 onMouseDown : Attribute Msg

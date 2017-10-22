@@ -17,13 +17,17 @@ type alias Model =
     }
 
 
+initialTriangle : Triangle
+initialTriangle =
+    { a = Vector 0 0
+    , b = Vector 400 400
+    , c = Vector 0 400
+    }
+
+
 initial : Model
 initial =
-    { triangle =
-        { a = Vector 0 0
-        , b = Vector 400 400
-        , c = Vector 0 400
-        }
+    { triangle = initialTriangle
     , lengthAB = 0
     , lengthAC = 0
     , lengthBC = 0

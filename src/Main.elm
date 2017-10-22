@@ -16,8 +16,7 @@ subscriptions model =
 
         True ->
             Sub.batch
-                [ Mouse.moves DragAt
-                , Mouse.ups DragEnd
+                [ Mouse.ups DragEnd
                 ]
 
 
