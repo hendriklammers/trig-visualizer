@@ -11,6 +11,10 @@ type alias Model =
     , lengthBC : Float
     , angleA : Float
     , angleB : Float
+    , cosA : Float
+    , sinA : Float
+    , cosB : Float
+    , sinB : Float
     , normalize : Bool
     , drag : Maybe Drag
     }
@@ -32,6 +36,10 @@ initial =
     , lengthBC = 0
     , angleA = 0
     , angleB = 0
+    , cosA = 0
+    , sinA = 0
+    , cosB = 0
+    , sinB = 0
     , normalize = False
     , drag = Nothing
     }
@@ -98,6 +106,7 @@ updateTriangle model triangle =
     ( { model | triangle = updateC triangle }
         |> calcLengths
         |> calcAngles
+        |> calcTrig
     , Cmd.none
     )
 
@@ -105,6 +114,30 @@ updateTriangle model triangle =
 updateC : Triangle -> Triangle
 updateC triangle =
     { triangle | c = Position triangle.a.x triangle.b.y }
+
+
+calcTrig : Model -> Model
+calcTrig model =
+    { model
+        | cosA = calcCos model.angleA
+        , cosB = calcCos model.angleB
+        , sinA = calcSin model.angleA
+        , sinB = calcSin model.angleB
+    }
+
+
+calcSin : Float -> Float
+calcSin angle =
+    angle
+        |> degreesToRadians
+        |> sin
+
+
+calcCos : Float -> Float
+calcCos angle =
+    angle
+        |> degreesToRadians
+        |> cos
 
 
 calcAngles : Model -> Model
@@ -129,6 +162,11 @@ calcAngles model =
 radiansToDegrees : Float -> Float
 radiansToDegrees radians =
     radians * 180 / pi
+
+
+degreesToRadians : Float -> Float
+degreesToRadians degrees =
+    degrees * pi / 180
 
 
 calcLengths : Model -> Model
