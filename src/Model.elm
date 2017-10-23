@@ -12,15 +12,15 @@ type alias Model =
     , angleA : Float
     , angleB : Float
     , normalize : Bool
-    , drag : Bool
+    , drag : Maybe Drag
     }
 
 
 initialTriangle : Triangle
 initialTriangle =
-    { a = Vector 0 0
-    , b = Vector 400 400
-    , c = Vector 0 400
+    { a = Position 0 0
+    , b = Position 400 400
+    , c = Position 0 400
     }
 
 
@@ -33,7 +33,7 @@ initial =
     , angleA = 0
     , angleB = 0
     , normalize = False
-    , drag = False
+    , drag = Nothing
     }
 
 
@@ -47,22 +47,42 @@ update msg model =
             ( { model | normalize = not model.normalize }, Cmd.none )
 
         DragStart pos ->
-            ( { model | drag = True }, Cmd.none )
+            let
+                log =
+                    Debug.log "pos" pos
+
+                offset =
+                    { x = model.triangle.b.x - pos.x + 100
+                    , y = model.triangle.b.y - pos.y + 100
+                    }
+            in
+                ( { model | drag = Just (Drag offset) }, Cmd.none )
 
         DragAt pos ->
-            let
-                b =
-                    { x = limitInt <| pos.x - 100
-                    , y = limitInt <| pos.y - 100
-                    }
+            case model.drag of
+                Just { offset } ->
+                    let
+                        x =
+                            (pos.x - 100) + offset.x
 
-                triangle =
-                    updateC <| { a = Vector 0 0, b = b, c = Vector 0 0 }
-            in
-                updateTriangle model triangle
+                        y =
+                            (pos.y - 100) + offset.y
+
+                        b =
+                            { x = limitInt <| x
+                            , y = limitInt <| y
+                            }
+
+                        triangle =
+                            updateC <| { a = Position 0 0, b = b, c = Position 0 0 }
+                    in
+                        updateTriangle model triangle
+
+                Nothing ->
+                    model ! []
 
         DragEnd pos ->
-            ( { model | drag = False }, Cmd.none )
+            ( { model | drag = Nothing }, Cmd.none )
 
 
 limitInt : Int -> Int
@@ -84,7 +104,7 @@ updateTriangle model triangle =
 
 updateC : Triangle -> Triangle
 updateC triangle =
-    { triangle | c = Vector triangle.a.x triangle.b.y }
+    { triangle | c = Position triangle.a.x triangle.b.y }
 
 
 calcAngles : Model -> Model
@@ -124,7 +144,7 @@ calcLengths model =
         }
 
 
-distance : Vector -> Vector -> Float
+distance : Position -> Position -> Float
 distance v1 v2 =
     let
         x =

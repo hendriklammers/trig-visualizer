@@ -27,18 +27,16 @@ import Svg
         )
 import Svg.Attributes as S
 import Model exposing (Model)
-import Types exposing (Vector, Triangle, Length)
+import Types exposing (..)
 import Messages exposing (..)
 import Json.Decode as Decode
-import Mouse exposing (Position)
 
 
 view : Model -> Html Msg
 view model =
     div
         [ H.class "container" ]
-        [ viewModel model
-        , viewOptions model
+        [ viewOptions model
         , viewSvg model
         ]
 
@@ -61,10 +59,12 @@ viewSvg model =
             "600"
 
         mouseMove =
-            if model.drag then
-                [ onMouseMove ]
-            else
-                []
+            case model.drag of
+                Just drag ->
+                    [ onMouseMove ]
+
+                Nothing ->
+                    []
     in
         svg
             ([ S.width w
@@ -172,17 +172,17 @@ viewLength { position, rotation, value } =
 
 viewLabels : Model -> List (Svg Msg)
 viewLabels model =
-    [ viewLabel "A" (Vector -10 -10)
+    [ viewLabel "A" (Position -10 -10)
     , viewLabel "B"
-        (Vector
+        (Position
             (model.triangle.b.x + 15)
             (model.triangle.b.y + 20)
         )
-    , viewLabel "C" (Vector -10 (model.triangle.c.y + 20))
+    , viewLabel "C" (Position -10 (model.triangle.c.y + 20))
     ]
 
 
-viewLabel : String -> Vector -> Svg Msg
+viewLabel : String -> Position -> Svg Msg
 viewLabel label { x, y } =
     text_
         [ S.textAnchor "middle"
@@ -224,23 +224,23 @@ cornerAttributes =
     ]
 
 
-viewCornerCircle : Vector -> Svg Msg
+viewCornerCircle : Position -> Svg Msg
 viewCornerCircle { x, y } =
     circle
         (cornerAttributes
             ++ [ S.cx <| toString x
                , S.cy <| toString y
-               , S.r "25"
+               , S.r "15"
                ]
         )
         []
 
 
-viewCornerRect : Vector -> Html Msg
+viewCornerRect : Position -> Html Msg
 viewCornerRect { x, y } =
     let
         size =
-            40
+            30
     in
         rect
             (cornerAttributes
@@ -253,7 +253,7 @@ viewCornerRect { x, y } =
             []
 
 
-viewHandle : Vector -> Svg Msg
+viewHandle : Position -> Svg Msg
 viewHandle { x, y } =
     rect
         [ S.x <| toString (x - 5)
@@ -312,4 +312,4 @@ onMouseMove =
 
 onMouseDown : Attribute Msg
 onMouseDown =
-    on "mousedown" (Decode.map DragStart Mouse.position)
+    on "mousedown" (Decode.map DragStart offsetPosition)

@@ -3,27 +3,26 @@ module Types exposing (..)
 import Mouse exposing (Position)
 
 
-type alias Vector =
+type alias Position =
     { x : Int
     , y : Int
     }
 
 
 type alias Triangle =
-    { a : Vector
-    , b : Vector
-    , c : Vector
+    { a : Position
+    , b : Position
+    , c : Position
     }
 
 
 type alias Length =
-    { position : Vector
+    { position : Position
     , rotation : Float
     , value : Float
     }
 
 
 type alias Drag =
-    { start : Position
-    , current : Position
+    { offset : Position
     }

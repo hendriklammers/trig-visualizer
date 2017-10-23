@@ -11,10 +11,10 @@ import Mouse
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.drag of
-        False ->
+        Nothing ->
             Sub.none
 
-        True ->
+        Just _ ->
             Sub.batch
                 [ Mouse.ups DragEnd
                 ]
