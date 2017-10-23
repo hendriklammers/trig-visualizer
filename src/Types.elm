@@ -1,7 +1,5 @@
 module Types exposing (..)
 
-import Mouse exposing (Position)
-
 
 type alias Position =
     { x : Int

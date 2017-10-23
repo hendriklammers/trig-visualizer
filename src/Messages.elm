@@ -1,7 +1,6 @@
 module Messages exposing (..)
 
-import Types exposing (Triangle)
-import Mouse exposing (Position)
+import Types exposing (Triangle, Position)
 
 
 type Msg
