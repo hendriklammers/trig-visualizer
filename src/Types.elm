@@ -26,6 +26,6 @@ type alias Drag =
     }
 
 
-type Unit
+type LengthUnit
     = Pixel
     | Normal

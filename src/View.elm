@@ -274,10 +274,10 @@ viewOptions model =
         toggleUnit =
             case model.unit of
                 Pixel ->
-                    ChangeUnit Normal
+                    ChangeLengthUnit Normal
 
                 Normal ->
-                    ChangeUnit Pixel
+                    ChangeLengthUnit Pixel
     in
         div
             []

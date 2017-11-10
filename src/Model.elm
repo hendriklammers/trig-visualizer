@@ -16,7 +16,7 @@ type alias Model =
     , cosB : Float
     , sinB : Float
     , drag : Maybe Drag
-    , unit : Unit
+    , unit : LengthUnit
     }
 
 
@@ -51,7 +51,7 @@ update msg model =
         UpdateTriangle triangle ->
             updateTriangle model triangle
 
-        ChangeUnit unit ->
+        ChangeLengthUnit unit ->
             ( { model | unit = unit }, Cmd.none )
 
         DragStart pos ->

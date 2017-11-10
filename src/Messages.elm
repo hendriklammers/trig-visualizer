@@ -1,11 +1,11 @@
 module Messages exposing (..)
 
-import Types exposing (Triangle, Position, Unit)
+import Types exposing (Triangle, Position, LengthUnit)
 
 
 type Msg
     = UpdateTriangle Triangle
-    | ChangeUnit Unit
+    | ChangeLengthUnit LengthUnit
     | DragStart Position
     | DragAt Position
     | DragEnd Position
