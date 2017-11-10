@@ -38,6 +38,7 @@ view model =
         [ H.class "container" ]
         [ viewOptions model
         , viewSvg model
+        , viewModel model
         ]
 
 
@@ -138,15 +139,15 @@ viewLengths model =
                 model.lengthAB
             ]
 
-        normalized =
-            if model.normalize then
+        updateUnit =
+            if model.unit == Normal then
                 List.map
                     (\ln -> { ln | value = ln.value / model.lengthAB })
                     ls
             else
                 ls
     in
-        List.map viewLength normalized
+        List.map viewLength updateUnit
 
 
 viewLength : Length -> Svg Msg
@@ -269,19 +270,28 @@ viewHandle { x, y } =
 
 viewOptions : Model -> Html Msg
 viewOptions model =
-    div
-        []
-        [ label
+    let
+        toggleUnit =
+            case model.unit of
+                Pixel ->
+                    ChangeUnit Normal
+
+                Normal ->
+                    ChangeUnit Pixel
+    in
+        div
             []
-            [ input
-                [ H.type_ "checkbox"
-                , H.style [ ( "margin-right", "5px" ) ]
-                , onClick ToggleNormalize
-                ]
+            [ label
                 []
-            , text "Normalize sides"
+                [ input
+                    [ H.type_ "checkbox"
+                    , H.style [ ( "margin-right", "5px" ) ]
+                    , onClick toggleUnit
+                    ]
+                    []
+                , text "Normalize sides"
+                ]
             ]
-        ]
 
 
 pointString : Triangle -> String

@@ -15,8 +15,8 @@ type alias Model =
     , sinA : Float
     , cosB : Float
     , sinB : Float
-    , normalize : Bool
     , drag : Maybe Drag
+    , unit : Unit
     }
 
 
@@ -40,8 +40,8 @@ initial =
     , sinA = 0
     , cosB = 0
     , sinB = 0
-    , normalize = False
     , drag = Nothing
+    , unit = Pixel
     }
 
 
@@ -51,8 +51,8 @@ update msg model =
         UpdateTriangle triangle ->
             updateTriangle model triangle
 
-        ToggleNormalize ->
-            ( { model | normalize = not model.normalize }, Cmd.none )
+        ChangeUnit unit ->
+            ( { model | unit = unit }, Cmd.none )
 
         DragStart pos ->
             let

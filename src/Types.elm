@@ -24,3 +24,8 @@ type alias Length =
 type alias Drag =
     { offset : Position
     }
+
+
+type Unit
+    = Pixel
+    | Normal
