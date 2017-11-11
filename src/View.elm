@@ -98,21 +98,62 @@ viewSvg model =
 
 viewAngles : Model -> List (Svg Msg)
 viewAngles model =
-    [ text_
-        [ S.textAnchor "start"
-        , S.x <| toString <| model.triangle.a.x
-        , S.y <| toString <| model.triangle.a.y - 25
-        , S.fontSize "16"
+    let
+        ax =
+            model.triangle.a.x
+
+        ay =
+            model.triangle.a.y - 48
+
+        bx =
+            model.triangle.b.x + 10
+
+        by =
+            model.triangle.b.y - 36
+    in
+        [ text_
+            [ S.textAnchor "start"
+            , S.fontSize "14"
+            , S.fontStyle "italic"
+            ]
+            [ Svg.tspan
+                [ S.x <| toString ax
+                , S.y <| toString ay
+                ]
+                [ Svg.text <| formatFloat model.angleA ++ "°" ]
+            , Svg.tspan
+                [ S.x <| toString ax
+                , S.y <| toString (ay + 18)
+                ]
+                [ Svg.text <| "sinθ " ++ formatFloat model.sinA ]
+            , Svg.tspan
+                [ S.x <| toString ax
+                , S.y <| toString (ay + 36)
+                ]
+                [ Svg.text <| "cosθ " ++ formatFloat model.cosA ]
+            ]
+        , text_
+            [ S.textAnchor "start"
+            , S.fontSize "14"
+            , S.fontStyle "italic"
+            ]
+            [ Svg.tspan
+                [ S.x <| toString bx
+                , S.y <| toString by
+                ]
+                [ Svg.text <| formatFloat model.angleB ++ "°" ]
+            , Svg.tspan
+                [ S.x <| toString bx
+                , S.y <| toString (by + 18)
+                ]
+                [ Svg.text <| "sinθ " ++ formatFloat model.sinB ]
+            , Svg.tspan
+                [ S.x <| toString bx
+                , S.y <| toString (by + 36)
+                ]
+                [ Svg.text <| "cosθ " ++ formatFloat model.cosB ]
+            ]
         ]
-        [ Svg.text <| formatFloat model.angleA ++ "°" ]
-    , text_
-        [ S.textAnchor "start"
-        , S.x <| toString <| model.triangle.b.x + 25
-        , S.y <| toString <| model.triangle.b.y
-        , S.fontSize "16"
-        ]
-        [ Svg.text <| formatFloat model.angleB ++ "°" ]
-    ]
 
 
 viewLengths : Model -> List (Svg Msg)
@@ -167,6 +208,7 @@ viewLength { position, rotation, value } =
             , S.x <| toString position.x
             , S.y <| toString position.y
             , S.transform r
+            , S.fontSize "14"
             ]
             [ Svg.text <| formatFloat value ]
 
