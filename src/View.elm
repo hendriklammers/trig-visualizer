@@ -39,15 +39,6 @@ view model =
         [ H.class "container" ]
         [ viewOptions model
         , viewSvg model
-        , viewModel model
-        ]
-
-
-viewModel : Model -> Html Msg
-viewModel model =
-    div
-        []
-        [ text <| toString model
         ]
 
 
