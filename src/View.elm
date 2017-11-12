@@ -30,6 +30,7 @@ import Model exposing (Model)
 import Types exposing (..)
 import Messages exposing (..)
 import Json.Decode as Decode
+import Settings exposing (settings)
 
 
 view : Model -> Html Msg
@@ -54,10 +55,10 @@ viewSvg : Model -> Html Msg
 viewSvg model =
     let
         w =
-            "800"
+            toString settings.width
 
         h =
-            "600"
+            toString settings.height
 
         mouseMove =
             case model.drag of
@@ -66,6 +67,14 @@ viewSvg model =
 
                 Nothing ->
                     []
+
+        position =
+            S.transform <|
+                "translate("
+                    ++ toString settings.left
+                    ++ " "
+                    ++ toString settings.top
+                    ++ ")"
     in
         svg
             ([ S.width w
@@ -87,7 +96,7 @@ viewSvg model =
                 [ S.width w, S.height h, S.fill "#eee" ]
                 []
             , g
-                [ S.transform "translate(100 100)" ]
+                [ position ]
                 ([ viewTriangle model.triangle, viewHandle model.triangle.b ]
                     ++ viewLabels model
                     ++ viewAngles model
@@ -120,17 +129,17 @@ viewAngles model =
                 [ S.x <| toString ax
                 , S.y <| toString ay
                 ]
-                [ Svg.text <| formatFloat model.angleA ++ "°" ]
+                [ Svg.text <| "angle " ++ formatFloat model.angleA ++ "°" ]
             , Svg.tspan
                 [ S.x <| toString ax
                 , S.y <| toString (ay + 18)
                 ]
-                [ Svg.text <| "sinθ " ++ formatFloat model.sinA ]
+                [ Svg.text <| "sin " ++ formatFloat model.sinA ]
             , Svg.tspan
                 [ S.x <| toString ax
                 , S.y <| toString (ay + 36)
                 ]
-                [ Svg.text <| "cosθ " ++ formatFloat model.cosA ]
+                [ Svg.text <| "cos " ++ formatFloat model.cosA ]
             ]
         , text_
             [ S.textAnchor "start"
@@ -141,17 +150,17 @@ viewAngles model =
                 [ S.x <| toString bx
                 , S.y <| toString by
                 ]
-                [ Svg.text <| formatFloat model.angleB ++ "°" ]
+                [ Svg.text <| "angle " ++ formatFloat model.angleB ++ "°" ]
             , Svg.tspan
                 [ S.x <| toString bx
                 , S.y <| toString (by + 18)
                 ]
-                [ Svg.text <| "sinθ " ++ formatFloat model.sinB ]
+                [ Svg.text <| "sin " ++ formatFloat model.sinB ]
             , Svg.tspan
                 [ S.x <| toString bx
                 , S.y <| toString (by + 36)
                 ]
-                [ Svg.text <| "cosθ " ++ formatFloat model.cosB ]
+                [ Svg.text <| "cos " ++ formatFloat model.cosB ]
             ]
         ]
 
@@ -298,11 +307,10 @@ viewCornerRect { x, y } =
 
 viewHandle : Position -> Svg Msg
 viewHandle { x, y } =
-    rect
-        [ S.x <| toString (x - 5)
-        , S.y <| toString (y - 5)
-        , S.width "10"
-        , S.height "10"
+    circle
+        [ S.cx <| toString x
+        , S.cy <| toString y
+        , S.r "6"
         , S.fill "#e81778"
         , S.class "handle"
         , onMouseDown

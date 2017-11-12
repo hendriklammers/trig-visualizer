@@ -2,6 +2,7 @@ module Model exposing (..)
 
 import Types exposing (..)
 import Messages exposing (..)
+import Settings exposing (settings)
 
 
 type alias Model =
@@ -60,8 +61,8 @@ update msg model =
                     Debug.log "pos" pos
 
                 offset =
-                    { x = model.triangle.b.x - pos.x + 100
-                    , y = model.triangle.b.y - pos.y + 100
+                    { x = model.triangle.b.x - pos.x + settings.left
+                    , y = model.triangle.b.y - pos.y + settings.top
                     }
             in
                 ( { model | drag = Just (Drag offset) }, Cmd.none )
@@ -71,18 +72,22 @@ update msg model =
                 Just { offset } ->
                     let
                         x =
-                            (pos.x - 100) + offset.x
+                            (pos.x - settings.left) + offset.x
 
                         y =
-                            (pos.y - 100) + offset.y
+                            (pos.y - settings.top) + offset.y
 
                         b =
-                            { x = limitInt <| x
-                            , y = limitInt <| y
+                            { x = limitX <| x
+                            , y = limitY <| y
                             }
 
                         triangle =
-                            updateC <| { a = Position 0 0, b = b, c = Position 0 0 }
+                            updateC <|
+                                { a = Position 0 0
+                                , b = b
+                                , c = Position 0 0
+                                }
                     in
                         updateTriangle model triangle
 
@@ -93,10 +98,18 @@ update msg model =
             ( { model | drag = Nothing }, Cmd.none )
 
 
-limitInt : Int -> Int
-limitInt n =
-    if n < 30 then
-        30
+limitX : Int -> Int
+limitX n =
+    if n < 0 then
+        0
+    else
+        n
+
+
+limitY : Int -> Int
+limitY n =
+    if n < 0 then
+        0
     else
         n
 
