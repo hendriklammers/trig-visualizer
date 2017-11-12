@@ -241,6 +241,7 @@ viewLabel label { x, y } =
         , S.x <| toString x
         , S.y <| toString y
         , S.fontSize "18"
+        , S.fill "#e81778"
         ]
         [ Svg.text label ]
 
@@ -310,8 +311,8 @@ viewHandle { x, y } =
     circle
         [ S.cx <| toString x
         , S.cy <| toString y
-        , S.r "6"
-        , S.fill "#e81778"
+        , S.r "5"
+        , S.fill "#000"
         , S.class "handle"
         , onMouseDown
         ]
