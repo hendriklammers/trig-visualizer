@@ -240,22 +240,35 @@ viewLabel label { x, y } =
 viewTriangle : Triangle -> Html Msg
 viewTriangle triangle =
     let
-        poly =
-            polygon
+        corners =
+            if hideCorners triangle.b then
+                []
+            else
+                [ viewCornerCircle triangle.a
+                , viewCornerCircle triangle.b
+                , viewCornerRect triangle.c
+                ]
+    in
+        g
+            []
+            ([ polygon
                 [ S.points <| pointString triangle
                 , S.fill "#fff"
                 , S.stroke "#000"
                 , S.strokeWidth "1"
                 ]
                 []
-    in
-        g
-            []
-            [ poly
-            , viewCornerCircle triangle.a
-            , viewCornerCircle triangle.b
-            , viewCornerRect triangle.c
-            ]
+             ]
+                ++ corners
+            )
+
+
+hideCorners : Position -> Bool
+hideCorners { x, y } =
+    if x < 30 || y < 30 then
+        True
+    else
+        False
 
 
 cornerAttributes : List (Svg.Attribute Msg)
