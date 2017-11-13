@@ -241,7 +241,7 @@ viewTriangle : Triangle -> Html Msg
 viewTriangle triangle =
     let
         corners =
-            if hideCorners triangle.b then
+            if triangle.c.x < 30 || triangle.c.y < 30 then
                 []
             else
                 [ viewCornerCircle triangle.a
@@ -261,14 +261,6 @@ viewTriangle triangle =
              ]
                 ++ corners
             )
-
-
-hideCorners : Position -> Bool
-hideCorners { x, y } =
-    if x < 30 || y < 30 then
-        True
-    else
-        False
 
 
 cornerAttributes : List (Svg.Attribute Msg)
