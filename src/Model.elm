@@ -100,18 +100,30 @@ update msg model =
 
 limitX : Int -> Int
 limitX n =
-    if n < 0 then
-        0
-    else
-        n
+    let
+        maxWidth =
+            settings.width - settings.left - settings.right
+    in
+        if n < 0 then
+            0
+        else if n > maxWidth then
+            maxWidth
+        else
+            n
 
 
 limitY : Int -> Int
 limitY n =
-    if n < 0 then
-        0
-    else
-        n
+    let
+        maxHeight =
+            settings.height - settings.top - settings.bottom
+    in
+        if n < 0 then
+            0
+        else if n > maxHeight then
+            maxHeight
+        else
+            n
 
 
 updateTriangle : Model -> Triangle -> ( Model, Cmd Msg )

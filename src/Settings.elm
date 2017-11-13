@@ -14,7 +14,7 @@ type alias Settings =
 settings : Settings
 settings =
     { left = 40
-    , right = 80
+    , right = 100
     , top = 80
     , bottom = 40
     , width = 800
