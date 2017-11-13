@@ -12,7 +12,3 @@ body {
 svg {
   display: block;
 }
-
-.handle {
-  cursor: move;
-}

@@ -36,10 +36,19 @@ import Settings exposing (settings)
 view : Model -> Html Msg
 view model =
     div
-        [ H.class "container" ]
+        [ H.style containerStyle
+        ]
         [ viewOptions model
         , viewSvg model
         ]
+
+
+containerStyle : List ( String, String )
+containerStyle =
+    [ ( "position", "relative" )
+    , ( "width", toString settings.width ++ "px" )
+    , ( "height", toString settings.height ++ "px" )
+    ]
 
 
 viewSvg : Model -> Html Msg
@@ -309,7 +318,7 @@ viewHandle { x, y } =
         , S.cy <| toString y
         , S.r "5"
         , S.fill "#000"
-        , S.class "handle"
+        , S.cursor "move"
         , onMouseDown
         ]
         []
@@ -327,7 +336,7 @@ viewOptions model =
                     ChangeLengthUnit Pixel
     in
         div
-            []
+            [ H.style optionsStyle ]
             [ label
                 []
                 [ input
@@ -339,6 +348,15 @@ viewOptions model =
                 , text "Normalize sides"
                 ]
             ]
+
+
+optionsStyle : List ( String, String )
+optionsStyle =
+    [ ( "position", "absolute" )
+    , ( "top", "10px" )
+    , ( "right", "15px" )
+    , ( "font-size", "14px" )
+    ]
 
 
 pointString : Triangle -> String
