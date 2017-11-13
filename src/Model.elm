@@ -18,31 +18,8 @@ type alias Model =
     , sinB : Float
     , drag : Maybe Drag
     , unit : LengthUnit
-    }
-
-
-initialTriangle : Triangle
-initialTriangle =
-    { a = Position 0 0
-    , b = Position 400 400
-    , c = Position 0 400
-    }
-
-
-initial : Model
-initial =
-    { triangle = initialTriangle
-    , lengthAB = 0
-    , lengthAC = 0
-    , lengthBC = 0
-    , angleA = 0
-    , angleB = 0
-    , cosA = 0
-    , sinA = 0
-    , cosB = 0
-    , sinB = 0
-    , drag = Nothing
-    , unit = Pixel
+    , width : Int
+    , height : Int
     }
 
 
@@ -78,8 +55,8 @@ update msg model =
                             (pos.y - settings.top) + offset.y
 
                         b =
-                            { x = limitX <| x
-                            , y = limitY <| y
+                            { x = limitX model.width <| x
+                            , y = limitY model.height <| y
                             }
 
                         triangle =
@@ -98,11 +75,11 @@ update msg model =
             ( { model | drag = Nothing }, Cmd.none )
 
 
-limitX : Int -> Int
-limitX n =
+limitX : Int -> Int -> Int
+limitX width n =
     let
         maxWidth =
-            settings.width - settings.left - settings.right
+            width - settings.left - settings.right
     in
         if n < 0 then
             0
@@ -112,11 +89,11 @@ limitX n =
             n
 
 
-limitY : Int -> Int
-limitY n =
+limitY : Int -> Int -> Int
+limitY height n =
     let
         maxHeight =
-            settings.height - settings.top - settings.bottom
+            height - settings.top - settings.bottom
     in
         if n < 0 then
             0

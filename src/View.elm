@@ -36,29 +36,25 @@ import Settings exposing (settings)
 view : Model -> Html Msg
 view model =
     div
-        [ H.style containerStyle
+        [ H.style
+            [ ( "position", "relative" )
+            , ( "width", toString model.width ++ "px" )
+            , ( "height", toString model.height ++ "px" )
+            ]
         ]
         [ viewOptions model
         , viewSvg model
         ]
 
 
-containerStyle : List ( String, String )
-containerStyle =
-    [ ( "position", "relative" )
-    , ( "width", toString settings.width ++ "px" )
-    , ( "height", toString settings.height ++ "px" )
-    ]
-
-
 viewSvg : Model -> Html Msg
 viewSvg model =
     let
         w =
-            toString settings.width
+            toString model.width
 
         h =
-            toString settings.height
+            toString model.height
 
         mouseMove =
             case model.drag of

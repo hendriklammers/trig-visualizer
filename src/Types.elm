@@ -1,6 +1,12 @@
 module Types exposing (..)
 
 
+type alias Flags =
+    { width : Int
+    , height : Int
+    }
+
+
 type alias Position =
     { x : Int
     , y : Int
