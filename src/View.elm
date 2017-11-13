@@ -246,7 +246,7 @@ viewTriangle : Triangle -> Html Msg
 viewTriangle triangle =
     let
         corners =
-            if triangle.c.x < 30 || triangle.c.y < 30 then
+            if triangle.b.x < 30 || triangle.b.y < 30 then
                 []
             else
                 [ viewCornerCircle triangle.a
