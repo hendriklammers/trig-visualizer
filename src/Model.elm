@@ -52,9 +52,15 @@ update msg model =
                         y =
                             (pos.y - settings.top) + offset.y
 
+                        maxX =
+                            (model.width - settings.left - settings.right)
+
+                        maxY =
+                            (model.height - settings.top - settings.bottom)
+
                         b =
-                            { x = limitX model.shiftDown model.width x
-                            , y = limitY model.shiftDown model.height y
+                            { x = limitPosition model.shiftDown maxX x
+                            , y = limitPosition model.shiftDown maxY y
                             }
 
                         triangle =
@@ -82,45 +88,21 @@ update msg model =
                 model ! []
 
 
-
--- TODO: Make generic limit function
-
-
-limitX : Bool -> Int -> Int -> Int
-limitX snap width n =
-    let
-        maxWidth =
-            width - settings.left - settings.right
-    in
-        if n < 0 then
-            0
-        else if n > maxWidth then
-            maxWidth
-        else if snap then
-            snapToGrid n
-        else
-            n
-
-
-limitY : Bool -> Int -> Int -> Int
-limitY snap height n =
-    let
-        maxHeight =
-            height - settings.top - settings.bottom
-    in
-        if n < 0 then
-            0
-        else if n > maxHeight then
-            maxHeight
-        else if snap then
-            snapToGrid n
-        else
-            n
+limitPosition : Bool -> Int -> Int -> Int
+limitPosition snap max n =
+    if n < 0 then
+        0
+    else if n > max then
+        max
+    else if snap then
+        snapToGrid n
+    else
+        n
 
 
 snapToGrid : Int -> Int
 snapToGrid n =
-    ((round (toFloat n / toFloat settings.gridSize)) * settings.gridSize)
+    (round <| toFloat n / toFloat settings.gridSize) * settings.gridSize
 
 
 updateTriangle : Model -> Triangle -> ( Model, Cmd Msg )
