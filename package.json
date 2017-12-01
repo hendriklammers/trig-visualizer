@@ -5,7 +5,8 @@
   "main": "index.js",
   "repository": "git@github.com:hendriklammers/trig-visualizer.git",
   "scripts": {
-    "start": "elm-live src/Main.elm --output=public/elm.js --dir=public --pushstate --open --debug"
+    "start": "elm-live src/Main.elm --output=public/elm.js --dir=public --pushstate --open --debug",
+    "build": "elm-make src/Main.elm --output public/elm.js"
   },
   "author": "Hendrik Lammers <lammers@gmail.com>",
   "license": "MIT",
