@@ -9,3 +9,5 @@ type Msg
     | DragStart Position
     | DragAt Position
     | DragEnd Position
+    | KeyDown Int
+    | KeyUp Int

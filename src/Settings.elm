@@ -1,4 +1,4 @@
-module Settings exposing (..)
+module Settings exposing (Settings, settings)
 
 
 type alias Settings =
@@ -6,6 +6,7 @@ type alias Settings =
     , right : Int
     , top : Int
     , bottom : Int
+    , gridSize : Int
     }
 
 
@@ -15,4 +16,5 @@ settings =
     , right = 100
     , top = 80
     , bottom = 40
+    , gridSize = 10
     }

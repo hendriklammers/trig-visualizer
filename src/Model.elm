@@ -1,4 +1,4 @@
-module Model exposing (..)
+module Model exposing (Model, update)
 
 import Types exposing (..)
 import Messages exposing (..)
@@ -20,6 +20,7 @@ type alias Model =
     , unit : LengthUnit
     , width : Int
     , height : Int
+    , shiftDown : Bool
     }
 
 
@@ -34,9 +35,6 @@ update msg model =
 
         DragStart pos ->
             let
-                log =
-                    Debug.log "pos" pos
-
                 offset =
                     { x = model.triangle.b.x - pos.x + settings.left
                     , y = model.triangle.b.y - pos.y + settings.top
@@ -55,8 +53,8 @@ update msg model =
                             (pos.y - settings.top) + offset.y
 
                         b =
-                            { x = limitX model.width <| x
-                            , y = limitY model.height <| y
+                            { x = limitX model.shiftDown model.width x
+                            , y = limitY model.shiftDown model.height y
                             }
 
                         triangle =
@@ -74,9 +72,22 @@ update msg model =
         DragEnd pos ->
             ( { model | drag = Nothing }, Cmd.none )
 
+        KeyDown keycode ->
+            ( { model | shiftDown = keycode == 16 }, Cmd.none )
 
-limitX : Int -> Int -> Int
-limitX width n =
+        KeyUp keycode ->
+            if keycode == 16 then
+                ( { model | shiftDown = False }, Cmd.none )
+            else
+                model ! []
+
+
+
+-- TODO: Make generic limit function
+
+
+limitX : Bool -> Int -> Int -> Int
+limitX snap width n =
     let
         maxWidth =
             width - settings.left - settings.right
@@ -85,12 +96,14 @@ limitX width n =
             0
         else if n > maxWidth then
             maxWidth
+        else if snap then
+            snapToGrid n
         else
             n
 
 
-limitY : Int -> Int -> Int
-limitY height n =
+limitY : Bool -> Int -> Int -> Int
+limitY snap height n =
     let
         maxHeight =
             height - settings.top - settings.bottom
@@ -99,8 +112,15 @@ limitY height n =
             0
         else if n > maxHeight then
             maxHeight
+        else if snap then
+            snapToGrid n
         else
             n
+
+
+snapToGrid : Int -> Int
+snapToGrid n =
+    ((round (toFloat n / toFloat settings.gridSize)) * settings.gridSize)
 
 
 updateTriangle : Model -> Triangle -> ( Model, Cmd Msg )

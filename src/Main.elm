@@ -7,18 +7,25 @@ import Model exposing (Model)
 import Messages exposing (..)
 import Mouse
 import Types exposing (..)
+import Keyboard
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model.drag of
-        Nothing ->
-            Sub.none
+    let
+        dragSubscription =
+            case model.drag of
+                Nothing ->
+                    Sub.none
 
-        Just _ ->
-            Sub.batch
-                [ Mouse.ups DragEnd
-                ]
+                Just _ ->
+                    Mouse.ups DragEnd
+    in
+        Sub.batch
+            [ dragSubscription
+            , Keyboard.downs (\keycode -> KeyDown keycode)
+            , Keyboard.ups (\keycode -> KeyUp keycode)
+            ]
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -49,6 +56,7 @@ init flags =
             , unit = Pixel
             , width = flags.width
             , height = flags.height
+            , shiftDown = False
             }
 
         commands =
