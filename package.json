@@ -6,7 +6,7 @@
   "repository": "git@github.com:hendriklammers/trig-visualizer.git",
   "scripts": {
     "start": "elm-live src/Main.elm --output=public/elm.js --dir=public --pushstate --open --debug",
-    "build": "sysconfcpus -n 1 elm-make src/Main.elm --output public/elm.js --yes"
+    "build": "elm-make src/Main.elm --output public/elm.js --yes"
   },
   "author": "Hendrik Lammers <lammers@gmail.com>",
   "license": "MIT",
