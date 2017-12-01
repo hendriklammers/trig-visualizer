@@ -5,20 +5,28 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Trig Visualizer</title>
   <meta name="description" content="Trigonometry visualized with SVG in Elm">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" href="public/css/styles.css">
 </head>
 <body>
   <div id="main"></div>
   <script src="public/js/elm.min.js"></script>
   <script>
-    Elm.Main.embed(
-      document.querySelector("#main"),
-      {
-        width: 800,
-        height: 600
+    const main = document.querySelector("#main")
+    const embed = () => {
+      while (main.firstChild) {
+        main.removeChild(main.firstChild)
       }
-    )
+      Elm.Main.embed(
+        main,
+        {
+          width: window.innerWidth,
+          height: window.innerHeight
+        }
+      )
+    }
+    embed()
+    window.addEventListener('resize', embed)
   </script>
 </body>
 </html>
